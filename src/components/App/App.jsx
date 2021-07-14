@@ -1,18 +1,20 @@
 import {useState} from 'react';
-import PropTypes from 'prop-types';
 import Notification from '../Notification/Notification';
 import FeedbackOptions from '../FeedbackOptions/FeedbackOptions';
 import Statistics from '../Statistics/Statistics';
 import { Container } from './App.styled.js';
 
-// Need add to Statistics total={},and positivePercentage={positiveFeed} and do some Hooks 
 
-function App() {
-    const [good, setGood] = useState(0);
-    const [neutral, setNeutral] = useState(0);
-    const [bad, setBad] = useState(0);
+const initialValue = 0;
+
+export default function App() {
+    const [good, setGood] = useState(initialValue);
+    const [neutral, setNeutral] = useState(initialValue);
+    const [bad, setBad] = useState(initialValue); 
     const [visible, setVisible] = useState(false);
     const feedbackBtnEl = Object.keys({ good, neutral, bad });
+    const totalSum = good + neutral + bad;
+    const positiveFeed = Math.round(good / totalSum * 100)
 
     const incrementStatistics = (e) => {
         const { name } = e.target;
@@ -26,42 +28,20 @@ function App() {
             case 'bad':
                 setBad(state => state + 1)
                 break;
-            default: console.log("not worked");
+            default: console.log("Need to reload");
         }
-       setVisible(true)
+        setVisible(true)
     }
 
     return (
         <Container>
-                <FeedbackOptions onLeaveFeedback={incrementStatistics} options={feedbackBtnEl} />
-                {!visible && <Notification message="No feedback given"/> }
-                { visible && <Statistics good={good} neutral={neutral} bad={bad}  />}
-            </Container>
+            <FeedbackOptions onLeaveFeedback={incrementStatistics} options={feedbackBtnEl} />
+            {!visible && <Notification message="No feedback given"/> }
+            {visible && <Statistics good={good} neutral={neutral} bad={bad} total={totalSum} positivePercentage={positiveFeed}/>}
+        </Container>
     )
 }
 
-export default App
 
 
 
-
-
-
-//     countTotalFeedback = () => {
-//         const { good, neutral, bad} = this.state;
-//         return good + bad + neutral;
-//     }
-//     countPositiveFeedbackPercentage = (totalSum) => {
-//         const { good } = this.state;
-//         return Math.round(good / totalSum * 100);
-//     }
-//   render() {
-//         const { good, neutral, bad, visible} = this.state;
-//         const totalSum = this.countTotalFeedback();
-//         const positiveFeed = this.countPositiveFeedbackPercentage(totalSum);
-    
-//         return (
-//             <div></div>
-//         )
-//   }
-// }
